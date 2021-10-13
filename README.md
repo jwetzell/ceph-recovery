@@ -20,7 +20,7 @@ To recover the data, two steps are needed:
 1. Clone this repo to a place of your choice. Make sure that you have at least a few hundrets MB space in this directory.
 2. Create a new subfolder `osds` in this folder.
 3. Choose one of the following options or mix them:
-3.1. Attach all OSDs as local storage. For every OSD create a subfolder in the `osds` folder and mount it there. Take a look at the docs for [ceph-objectstore-tool]](https://docs.ceph.com/en/pacific/man/8/ceph-objectstore-tool/) with the `fuse` op for easy mounting of local OSDs
+3.1. Attach all OSDs as local storage. For every OSD create a subfolder in the `osds` folder and mount it there. Take a look at the docs for [ceph-objectstore-tool](https://docs.ceph.com/en/pacific/man/8/ceph-objectstore-tool/) with the `fuse` op for easy mounting of local OSDs
 3.2.  Use sshfs to mount OSDs over network / ssh
 
 
@@ -55,7 +55,7 @@ To restore an image you need **3** information:
 2. A destination folder. Just a folder with enough free space to store your image of the specified size. (e.g. `/mnt/sda`)
 
 Having these 3 information you can restore the image:  
-`./assemble.sh vms/vm-xyz-disk-n.id 34359738368 /mnt/sda`
+`./straight-assembles.sh my-rbd-id /mnt/sda`
 
 This will process all parts of the image and write it to a single image file. After this you can mount this image and access data or just put it back to a new cluster. 
 
