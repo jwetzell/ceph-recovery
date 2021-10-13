@@ -2,34 +2,20 @@
 
 OSDDIR=$1
 
+if [ -f "files.list.all.tmp" ]; then
+	echo "Clearing old .tmp file list"
+	rm files.list.all.tmp
+fi
+
 # Loop all OSDs
 for x in $(ls $OSDDIR); do
 	echo Scanning $x
 	# SEARCH ALL _head directories
-	for y in $(find $OSDDIR/$x/current -type d -size +1b | grep _head); do
-		find $y -type f -name *udata* >> files.list.all.tmp
-		find $y -type f -name *uid* >> vms.list.all.tmp
+	for y in $(find $OSDDIR/$x -maxdepth 1 -type d | grep _head); do
+		echo Searching for data in $y
+		#locate any data files that actually have a size (this could realistically be set to exact size match the RBD block size)
+		find $y -maxdepth 4 -type f -name data -size +1b >> files.list.all.tmp
+		#find $y -name *id* >> vms.list.all.tmp
 	done
 done
 
-mkdir file_lists
-
-# Sort collected data by Header
-echo "Preparing UDATA files"
-for l in $(cat files.list.all.tmp | rev | cut -d "/" -f 1 | rev | cut -d "." -f 2 | sort -u); do
-	cat files.list.all.tmp | grep $l | sort -u -k4,4 -t "." -s  >> file_lists/$l.files
-done
-#rm files.list.all.tmp
-echo "UDATA files ready"
-
-
-mkdir vms
-# Scan VM IDs
-echo "Extracting VM IDs"
-for l in $(cat vms.list.all.tmp | sort -u); do
-	vm=$(echo $l | rev | cut -d "/" -f 1 | rev | cut -d "." -f 2 | cut -d "_" -f 1)
-	echo $l > vms/$vm.id
-done
-echo "VM IDs extracted"
-
-#rm vms.list.all.tmp
